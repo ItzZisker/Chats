@@ -43,6 +43,8 @@ public final class Chats extends JavaPlugin {
         EmotionCommand.destroy();
         Colors.destroy();
 
-        dataCache.dispose();
+        if (dataCache != null) {
+            dataCache.dispose();
+        }
     }
 }
