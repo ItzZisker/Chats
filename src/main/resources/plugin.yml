@@ -1,0 +1,13 @@
+name: Chats
+version: '${version}'
+main: me.kallix.chats.Chats
+api-version: 1.19
+commands:
+  hug:
+    description: Hug people :)
+  kiss:
+    description: Kiss people :v
+  strike:
+    description: Strike people /:\
+  uwu:
+    description: UwU people
