@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public final class ChatColorCommand implements TabExecutor {
@@ -39,7 +40,19 @@ public final class ChatColorCommand implements TabExecutor {
             return true;
         }
 
-        return false;
+        Colors color;
+
+        try {
+            color = Colors.valueOf(args[0]);
+        } catch (IllegalArgumentException e) {
+            player.sendMessage(ChatColor.RED + "Invalid color! use tab to see available chat colors.");
+            return false;
+        }
+
+        dataCache.putColor(player, color);
+        player.sendMessage(ChatColor.GREEN + "ChatColor changed successfully!");
+
+        return true;
     }
 
     public void help(Player player) {
@@ -51,6 +64,12 @@ public final class ChatColorCommand implements TabExecutor {
                                                 @NotNull Command command,
                                                 @NotNull String label,
                                                 @NotNull String[] args) {
-        return colors;
+        if (args.length > 0) {
+            return colors.stream()
+                    .filter(color -> color.startsWith(args[0]))
+                    .collect(Collectors.toList());
+        } else {
+            return null;
+        }
     }
 }

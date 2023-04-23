@@ -5,11 +5,13 @@ api-version: 1.19
 depend:
   - PlayerDataAPI
 commands:
+  chatcolor:
+    description: "Change your display name color in chat!"
   hug:
-    description: Hug people :)
+    description: "Hug people :)"
   kiss:
-    description: Kiss people :v
+    description: "Kiss people :v"
   strike:
-    description: Strike people /:\
+    description: "Strike people"
   uwu:
-    description: UwU people
+    description: "UwU people"

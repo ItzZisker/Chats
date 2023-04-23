@@ -33,6 +33,10 @@ public final class PlayerDataCache {
         return Optional.ofNullable(colors.get(player.getUniqueId()));
     }
 
+    public void putColor(Player player, Colors color) {
+        colors.put(player.getUniqueId(), color);
+    }
+
     public boolean hasColor(Player player) {
         return colors.containsKey(player.getUniqueId());
     }

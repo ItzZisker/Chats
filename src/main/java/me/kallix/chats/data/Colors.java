@@ -3,6 +3,7 @@ package me.kallix.chats.data;
 import com.google.common.collect.Maps;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import me.kallix.chats.utils.Pair;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -74,7 +75,7 @@ public enum Colors {
     GRAY(Collections.singletonList(Color.GRAY), ChatColor.DARK_GRAY),
     BLACK(Collections.singletonList(Color.BLACK), ChatColor.BLACK);
 
-    private static final Map<String, String> cache = Maps.newConcurrentMap();
+    private static final Map<String, Pair<Colors, String>> cache = Maps.newConcurrentMap();
     private final List<java.awt.Color> colors;
 
     @Getter
@@ -82,8 +83,10 @@ public enum Colors {
 
     public String process(String displayName) {
 
-        if (cache.containsKey(displayName)) {
-            return cache.get(displayName);
+        Pair<Colors, String> pair = cache.get(displayName);
+
+        if (pair != null && pair.key() == this) {
+            return pair.value();
         }
 
         String result;
@@ -111,7 +114,7 @@ public enum Colors {
             result = ChatColor.of(colors.get(0)) + displayName;
         }
 
-        cache.putIfAbsent(displayName, result);
+        cache.putIfAbsent(displayName, new Pair<>(this, result));
 
         return result;
     }
