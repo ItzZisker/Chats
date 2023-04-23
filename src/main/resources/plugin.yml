@@ -2,6 +2,8 @@ name: Chats
 version: '${version}'
 main: me.kallix.chats.Chats
 api-version: 1.19
+depend:
+  - PlayerDataAPI
 commands:
   hug:
     description: Hug people :)

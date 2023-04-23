@@ -1,11 +1,11 @@
-package me.kallix.chats.commands;
+package me.kallix.chats.commands.emotions;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public final class UwUCommand extends ChatCommand {
+public final class UwUCommand extends EmotionCommand {
 
     public UwUCommand(Plugin plugin) {
         super(plugin);

@@ -1,8 +1,6 @@
-package me.kallix.chats.commands;
+package me.kallix.chats.commands.emotions;
 
 import com.google.common.collect.Sets;
-import me.kallix.chats.Chats;
-import me.kallix.chats.utils.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -15,14 +13,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 import java.util.UUID;
 
-public abstract class ChatCommand implements CommandExecutor {
+public abstract class EmotionCommand implements CommandExecutor {
 
-    private static final Set<ChatCommand> chatCommands = Sets.newHashSet();
+    private static final Set<EmotionCommand> chatCommands = Sets.newHashSet();
 
     protected final Plugin plugin;
     protected final Set<UUID> cooldown = Sets.newHashSet();
 
-    public ChatCommand(Plugin plugin) {
+    public EmotionCommand(Plugin plugin) {
         this.plugin = plugin;
         chatCommands.add(this);
     }
@@ -32,7 +30,7 @@ public abstract class ChatCommand implements CommandExecutor {
     }
 
     public static void destroy() {
-        Sets.newHashSet(chatCommands).forEach(ChatCommand::dispose);
+        Sets.newHashSet(chatCommands).forEach(EmotionCommand::dispose);
     }
 
     public void dispose() {
@@ -47,7 +45,7 @@ public abstract class ChatCommand implements CommandExecutor {
                              @NotNull String[] args) {
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(ChatColor.RED + "Executors must be players!");
+            sender.sendMessage(ChatColor.RED + "Only players should execute this command!");
             return false;
         }
 
@@ -56,15 +54,10 @@ public abstract class ChatCommand implements CommandExecutor {
             return false;
         }
 
-        if (!Validate.isValidUser(args[0])) {
-            player.sendMessage(ChatColor.RED + "Invalid username!");
-            return false;
-        }
-
         Player target = Bukkit.getPlayer(args[0]);
 
         if (target == null || !target.isOnline()) {
-            player.sendMessage(ChatColor.RED + "Player not found (or not online)!");
+            player.sendMessage(ChatColor.RED + "Player not found.");
             return false;
         }
 
