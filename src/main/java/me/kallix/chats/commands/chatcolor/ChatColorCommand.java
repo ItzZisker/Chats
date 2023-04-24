@@ -35,7 +35,7 @@ public final class ChatColorCommand implements TabExecutor {
         }
 
         if (args.length == 0) {
-            dataCache.getColor(player).ifPresent(color -> player.sendMessage(ChatColor.GRAY + "current: " + color));
+            dataCache.getColor(player).ifPresent(color -> player.sendMessage(ChatColor.GRAY + "current: " + color.getChatColor() + color.name()));
             help(player);
             return true;
         }
