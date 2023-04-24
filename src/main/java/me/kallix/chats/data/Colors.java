@@ -114,7 +114,7 @@ public enum Colors {
             result = ChatColor.of(colors.get(0)) + displayName;
         }
 
-        cache.putIfAbsent(displayName, new Pair<>(this, result));
+        cache.put(displayName, new Pair<>(this, result));
 
         return result;
     }
