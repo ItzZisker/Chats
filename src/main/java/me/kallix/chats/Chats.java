@@ -3,9 +3,12 @@ package me.kallix.chats;
 import com.jeff_media.playerdataapi.PlayerDataAPI;
 import lombok.Getter;
 import me.kallix.chats.commands.chatcolor.ChatColorCommand;
+import me.kallix.chats.commands.config.ReloadCommand;
 import me.kallix.chats.commands.emotions.*;
-import me.kallix.chats.data.Colors;
+import me.kallix.chats.data.ColorHandler;
+import me.kallix.chats.data.Configuration;
 import me.kallix.chats.data.PlayerDataCache;
+import me.kallix.chats.hook.PlaceholdersHook;
 import me.kallix.chats.listeners.AsyncChatListener;
 import me.kallix.chats.listeners.PlayerJoinListener;
 import me.kallix.chats.listeners.PlayerQuitListener;
@@ -19,14 +22,22 @@ public final class Chats extends JavaPlugin {
     private PlayerDataCache dataCache;
     private PlayerDataAPI dataAPI;
 
+    private Configuration configuration;
+    private ColorHandler colorHandler;
+
     @Override
     @SuppressWarnings("ConstantConditions")
     public void onEnable() {
 
         PluginManager manager = getServer().getPluginManager();
 
+        saveDefaultConfig();
+        reloadConfig();
+
         this.dataAPI = (PlayerDataAPI) manager.getPlugin("PlayerDataAPI");
+        this.configuration = new Configuration(this.getConfig());
         this.dataCache = new PlayerDataCache(this);
+        this.colorHandler = new ColorHandler(configuration);
 
         getCommand("uwu").setExecutor(new UwUCommand(this));
         getCommand("hug").setExecutor(new HugCommand(this));
@@ -34,14 +45,19 @@ public final class Chats extends JavaPlugin {
         getCommand("strike").setExecutor(new StrikeCommand(this));
 
         PluginCommand chatcmd = getCommand("chatcolor");
-        ChatColorCommand executor = new ChatColorCommand(dataCache);
+        PluginCommand reloadcmd = getCommand("chatcolorreload");
+        ChatColorCommand chatExec = new ChatColorCommand(colorHandler, dataCache);
+        ReloadCommand reloadExec = new ReloadCommand(this);
 
-        chatcmd.setExecutor(executor);
-        chatcmd.setTabCompleter(executor);
+        chatcmd.setExecutor(chatExec);
+        chatcmd.setTabCompleter(chatExec);
+        reloadcmd.setExecutor(reloadExec);
 
-        manager.registerEvents(new AsyncChatListener(dataCache), this);
-        manager.registerEvents(new PlayerQuitListener(dataCache), this);
+        manager.registerEvents(new AsyncChatListener(colorHandler, dataCache, configuration,
+                manager.getPlugin("PlaceholderAPI") != null ? new PlaceholdersHook() : null), this);
+
         manager.registerEvents(new PlayerJoinListener(dataCache), this);
+        manager.registerEvents(new PlayerQuitListener(dataCache), this);
 
         getServer().getOnlinePlayers().forEach(dataCache::cacheColor);
         getLogger().info("Enabled Chats v1.0 by Kallix_");
@@ -50,7 +66,6 @@ public final class Chats extends JavaPlugin {
     @Override
     public void onDisable() {
         EmotionCommand.destroy();
-        Colors.destroy();
 
         if (dataCache != null) {
             dataCache.dispose();

@@ -1,7 +1,7 @@
 package me.kallix.chats.commands.chatcolor;
 
 import lombok.RequiredArgsConstructor;
-import me.kallix.chats.data.Colors;
+import me.kallix.chats.data.ColorHandler;
 import me.kallix.chats.data.PlayerDataCache;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -11,17 +11,14 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public final class ChatColorCommand implements TabExecutor {
 
+    private final ColorHandler colorHandler;
     private final PlayerDataCache dataCache;
-    private final List<String> colors = Arrays.stream(Colors.values())
-            .map(Colors::name)
-            .toList();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender,
@@ -35,22 +32,18 @@ public final class ChatColorCommand implements TabExecutor {
         }
 
         if (args.length == 0) {
-            dataCache.getColor(player).ifPresent(color ->
-                    player.sendMessage(ChatColor.GRAY + "current: " + color.getChatColor() + color.name()));
+            dataCache.getColor(player).ifPresent(key ->
+                    player.sendMessage(ChatColor.GRAY + "current: " + colorHandler.getColorfulKey(key)));
             help(player);
             return true;
         }
 
-        Colors color;
-
-        try {
-            color = Colors.valueOf(args[0]);
-        } catch (IllegalArgumentException e) {
-            player.sendMessage(ChatColor.RED + "Invalid color! use tab to see available chat colors.");
+        if (!colorHandler.hasKey(args[0])) {
+            player.sendMessage(ChatColor.RED + "Invalid chatcolor \"" + args[0] + "\", press tab to see all");
             return false;
         }
 
-        dataCache.putColor(player, color);
+        dataCache.putColor(player, args[0]);
         player.sendMessage(ChatColor.GREEN + "ChatColor changed successfully!");
 
         return true;
@@ -66,7 +59,8 @@ public final class ChatColorCommand implements TabExecutor {
                                                 @NotNull String label,
                                                 @NotNull String[] args) {
         if (args.length > 0) {
-            return colors.stream()
+            return colorHandler.getKeys()
+                    .stream()
                     .filter(color -> color.startsWith(args[0]))
                     .collect(Collectors.toList());
         } else {

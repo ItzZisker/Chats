@@ -2,7 +2,6 @@ package me.kallix.chats.listeners;
 
 import lombok.RequiredArgsConstructor;
 import me.kallix.chats.commands.emotions.EmotionCommand;
-import me.kallix.chats.data.Colors;
 import me.kallix.chats.data.PlayerDataCache;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,8 +19,6 @@ public final class PlayerQuitListener implements Listener {
         Player player = event.getPlayer();
 
         EmotionCommand.destroy(player);
-        Colors.destroy(player);
-
         dataCache.saveAndClearColor(player, 1200);
     }
 }

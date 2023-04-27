@@ -16,8 +16,12 @@ repositories {
         url = "https://oss.sonatype.org/content/groups/public/"
     }
     maven {
-        name = "jeff-media-public"
+        name = "jeff-media-public-repo"
         url = 'https://repo.jeff-media.com/public'
+    }
+    maven {
+        name = "extendedclip-repo"
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
 }
 
@@ -26,6 +30,7 @@ dependencies {
     compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
     compileOnly 'org.projectlombok:lombok:1.18.26'
     compileOnly 'com.jeff_media.playerdatapi:playerdataapi-dist:1.0-SNAPSHOT'
+    compileOnly 'me.clip:placeholderapi:2.11.3'
 }
 
 def targetJavaVersion = 17

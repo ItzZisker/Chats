@@ -4,9 +4,13 @@ main: me.kallix.chats.Chats
 api-version: 1.19
 depend:
   - PlayerDataAPI
+softdepend:
+  - PlaceholderAPI
 commands:
   chatcolor:
     description: "Change your display name color in chat!"
+  chatcolorreload:
+    description: "Reload configuration"
   hug:
     description: "Hug people :)"
   kiss:

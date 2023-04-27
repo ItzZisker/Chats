@@ -17,10 +17,12 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import static me.kallix.chats.data.ColorHandler.UNDEFINED;
+
 @RequiredArgsConstructor
 public final class PlayerDataCache {
 
-    private final Map<UUID, Colors> colors = Maps.newConcurrentMap();
+    private final Map<UUID, String> colors = Maps.newConcurrentMap();
     private final Map<UUID, BukkitTask> removeTimers = Maps.newHashMap();
 
     private final Plugin plugin;
@@ -31,11 +33,11 @@ public final class PlayerDataCache {
         this.dataAPI = plugin.getDataAPI();
     }
 
-    public synchronized Optional<Colors> getColor(Player player) {
+    public synchronized Optional<String> getColor(Player player) {
         return Optional.ofNullable(colors.get(player.getUniqueId()));
     }
 
-    public void putColor(Player player, Colors color) {
+    public void putColor(Player player, String color) {
         colors.put(player.getUniqueId(), color);
     }
 
@@ -50,12 +52,12 @@ public final class PlayerDataCache {
 
                 table.get(player.getUniqueId(), "chatcolor").whenComplete((str, thr) -> {
                     if (str != null && player.isOnline()) {
-                        colors.putIfAbsent(player.getUniqueId(), Colors.valueOf(str));
+                        colors.putIfAbsent(player.getUniqueId(), str);
                     } else if (thr != null) {
                         throw new PlayerDataError(thr);
                     } else if (str == null) {
-                        table.set(player.getUniqueId(), "chatcolor", Colors.GRAY.name());
-                        colors.putIfAbsent(player.getUniqueId(), Colors.GRAY);
+                        table.set(player.getUniqueId(), "chatcolor", UNDEFINED);
+                        colors.putIfAbsent(player.getUniqueId(), UNDEFINED);
                     }
                 });
             } catch (Exception e) {
@@ -78,11 +80,11 @@ public final class PlayerDataCache {
         getColor(player).ifPresent(color -> saveColor(player.getUniqueId(), color));
     }
 
-    public CompletableFuture<Void> saveColor(UUID uuid, Colors color) {
+    public CompletableFuture<Void> saveColor(UUID uuid, String color) {
         try {
             return dataAPI.getProvider()
                     .getOrCreateVarCharTable("data")
-                    .set(uuid, "chatcolor", color.name());
+                    .set(uuid, "chatcolor", color);
         } catch (Exception e) {
             throw new PlayerDataError(e);
         }

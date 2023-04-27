@@ -1,0 +1,67 @@
+# Chat formatting replacements:
+# - {displayName} -> player's coloured display name
+# - {msg} -> player's chat message
+# - %placeholder% -> supported if PlaceholderAPI is installed
+format: "{displayName}: §r§f{msg}"
+
+# Color specification (RGB)
+# each key is the color name, and each of the string list elements need the RGB color codes split by ":", eg. "R:G:B"
+colors:
+  red_gradient:
+    - "255:51:51"
+    - "255:0:0"
+    - "204:0:0"
+    - "153:0:0"
+    - "102:0:0"
+    - "80:0:0"
+  blue_gradient:
+    - "102:178:255"
+    - "51:153:255"
+    - "0:128:255"
+    - "0:102:204"
+    - "102:102:255"
+    - "51:51:255"
+    - "0:0:255"
+    - "0:0:153"
+    - "0:0:102"
+  green_gradient:
+    - "0:255:0"
+    - "0:204:0"
+    - "0:153:0"
+    - "0:130:0"
+    - "0:121:0"
+    - "0:80:0"
+    - "0:51:0"
+  orange_gradient:
+    - "255:153:51"
+    - "255:128:0"
+    - "204:102:0"
+    - "153:76:0"
+    - "102:51:0"
+  gray_gradient:
+    - "128:128:128"
+    - "96:96:96"
+    - "70:70:70"
+    - "60:60:60"
+    - "40:40:40"
+    - "30:30:30"
+  red:
+    - "255:85:85"
+  blue:
+    - "85:85:255"
+  lime:
+    - "85:255:85"
+  green:
+    - "0:170:0"
+  yellow:
+    - "255:255:85"
+  aqua:
+    - "85:255:255"
+  white:
+    - "255:255:255"
+  pink:
+    - "30:30:30"
+  gray:
+    - "170:170:170"
+  black:
+    - "0:0:0"
