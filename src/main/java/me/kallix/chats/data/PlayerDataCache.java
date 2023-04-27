@@ -14,6 +14,8 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public final class PlayerDataCache {
@@ -76,9 +78,9 @@ public final class PlayerDataCache {
         getColor(player).ifPresent(color -> saveColor(player.getUniqueId(), color));
     }
 
-    public void saveColor(UUID uuid, Colors color) {
+    public CompletableFuture<Void> saveColor(UUID uuid, Colors color) {
         try {
-            dataAPI.getProvider()
+            return dataAPI.getProvider()
                     .getOrCreateVarCharTable("data")
                     .set(uuid, "chatcolor", color.name());
         } catch (Exception e) {
@@ -106,9 +108,11 @@ public final class PlayerDataCache {
     }
 
     public void dispose() {
-        colors.forEach(this::saveColor);
-        colors.clear();
-        removeTimers.forEach((uuid, color) -> cancelRemoveColor(uuid));
+        Maps.newHashMap(removeTimers).forEach((uuid, color) -> cancelRemoveColor(uuid));
         removeTimers.clear();
+        colors.forEach((uuid, color) -> saveColor(uuid, color)
+                .orTimeout(3, TimeUnit.SECONDS)
+                .join());
+        colors.clear();
     }
 }
